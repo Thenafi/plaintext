@@ -4,7 +4,9 @@ import {
   Sun, 
   Moon, 
   Type,
-  Download
+  Download,
+  Info,
+  X
 } from 'lucide-react';
 import { cleanupOldDrafts, createNewSessionId, getDrafts, saveDraft } from './services/storage';
 import HistorySidebar from './components/HistorySidebar';
@@ -16,9 +18,10 @@ function App() {
   const [text, setText] = useState('');
   const [sessionId, setSessionId] = useState<string>('');
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  const [isInfoOpen, setIsInfoOpen] = useState(false);
   const [drafts, setDrafts] = useState<Draft[]>([]);
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [font, setFont] = useState<EditorFont>(EditorFont.SERIF);
+  const [font, setFont] = useState<EditorFont>(EditorFont.SANS);
   const [saveStatus, setSaveStatus] = useState<'saved' | 'saving' | 'idle'>('idle');
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -118,6 +121,14 @@ function App() {
         <div className="h-4 w-px bg-gray-300 dark:bg-zinc-700" />
 
         <button 
+          onClick={() => setIsInfoOpen(true)}
+          className="p-2 hover:bg-gray-100 dark:hover:bg-zinc-800 text-gray-600 dark:text-gray-400 rounded-full transition-colors"
+          title="About"
+        >
+          <Info className="w-4 h-4" />
+        </button>
+
+        <button 
           onClick={toggleFont}
           className="p-2 hover:bg-gray-100 dark:hover:bg-zinc-800 text-gray-600 dark:text-gray-400 rounded-full transition-colors"
           title="Toggle Font"
@@ -170,6 +181,36 @@ function App() {
           autoFocus
         />
       </main>
+
+      {/* Info Modal */}
+      {isInfoOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 dark:bg-black/50 backdrop-blur-sm p-4">
+          <div className="bg-white dark:bg-zinc-900 w-full max-w-md p-6 rounded-2xl shadow-xl border border-gray-100 dark:border-zinc-800 relative animate-in fade-in zoom-in duration-200">
+            <button 
+              onClick={() => setIsInfoOpen(false)}
+              className="absolute top-4 right-4 p-1 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-full text-gray-400 transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            
+            <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white font-sans">About ZenDraft</h2>
+            <div className="space-y-4 text-gray-600 dark:text-gray-300 text-sm leading-relaxed font-sans">
+              <p>
+                ZenDraft is a minimalist, distraction-free writing environment designed to help you focus on your thoughts.
+              </p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>Auto-Save:</strong> Your work is automatically saved to your browser's local storage as you type.</li>
+                <li><strong>Privacy First:</strong> No data leaves your device. Everything stays local.</li>
+                <li><strong>Draft History:</strong> Access previous sessions via the history button. Drafts are kept for 14 days.</li>
+                <li><strong>Customizable:</strong> Toggle between Serif, Sans-Serif, and Monospace fonts, and Light/Dark modes.</li>
+              </ul>
+              <p className="pt-2 text-xs text-gray-400">
+                v1.0.0 &bull; Local Storage &bull; No Cloud Sync
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Components */}
       <HistorySidebar 
