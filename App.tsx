@@ -8,7 +8,7 @@ import {
   Info,
   X
 } from 'lucide-react';
-import { cleanupOldDrafts, createNewSessionId, getDrafts, saveDraft } from './services/storage';
+import { cleanupOldDrafts, createNewSessionId, getDrafts, saveDraft, getRetentionPeriod, setRetentionPeriod } from './services/storage';
 import HistorySidebar from './components/HistorySidebar';
 import { Draft } from './types';
 import { EditorFont } from './constants';
@@ -23,6 +23,7 @@ function App() {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [font, setFont] = useState<EditorFont>(EditorFont.SANS);
   const [saveStatus, setSaveStatus] = useState<'saved' | 'saving' | 'idle'>('idle');
+  const [retentionDays, setRetentionDays] = useState(14);
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -38,6 +39,10 @@ function App() {
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
       setIsDarkMode(true);
     }
+
+    // 4. Load retention settings
+    const ms = getRetentionPeriod();
+    setRetentionDays(Math.floor(ms / (24 * 60 * 60 * 1000)));
   }, []);
 
   // Dark Mode Effect
@@ -105,6 +110,11 @@ function App() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+  };
+
+  const handleRetentionChange = (days: number) => {
+    setRetentionDays(days);
+    setRetentionPeriod(days * 24 * 60 * 60 * 1000);
   };
 
   return (
@@ -201,9 +211,31 @@ function App() {
               <ul className="list-disc pl-5 space-y-1">
                 <li><strong>Auto-Save:</strong> Your work is automatically saved to your browser's local storage as you type.</li>
                 <li><strong>Privacy First:</strong> No data leaves your device. Everything stays local.</li>
-                <li><strong>Draft History:</strong> Access previous sessions via the history button. Drafts are kept for 14 days.</li>
+                <li><strong>Draft History:</strong> Access previous sessions via the history button. Drafts are kept for {retentionDays} days.</li>
                 <li><strong>Customizable:</strong> Toggle between Serif, Sans-Serif, and Monospace fonts, and Light/Dark modes.</li>
               </ul>
+
+              <div className="pt-4 border-t border-gray-100 dark:border-zinc-800">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                  Draft Retention Period
+                </label>
+                <select 
+                  value={retentionDays}
+                  onChange={(e) => handleRetentionChange(Number(e.target.value))}
+                  className="w-full bg-gray-50 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 text-gray-700 dark:text-gray-200 rounded-lg p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                >
+                  <option value={1}>1 Day</option>
+                  <option value={3}>3 Days</option>
+                  <option value={7}>7 Days</option>
+                  <option value={14}>14 Days (Default)</option>
+                  <option value={30}>30 Days</option>
+                  <option value={90}>90 Days</option>
+                  <option value={365}>1 Year</option>
+                </select>
+                <p className="text-xs text-gray-400 mt-2">
+                  Expired drafts are automatically removed when you open the app.
+                </p>
+              </div>
               <p className="pt-2 text-xs text-gray-400">
                 v1.0.0 &bull; Local Storage &bull; No Cloud Sync
               </p>

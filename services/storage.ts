@@ -1,5 +1,5 @@
 import { Draft } from '../types';
-import { STORAGE_KEY, DRAFT_RETENTION_MS } from '../constants';
+import { STORAGE_KEY, DRAFT_RETENTION_MS, SETTINGS_KEY } from '../constants';
 
 // Generate a simple unique ID
 const generateId = (): string => {
@@ -11,7 +11,7 @@ export const getDrafts = (): Draft[] => {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (!stored) return [];
     const drafts: Draft[] = JSON.parse(stored);
-    
+
     // Sort by last updated (newest first)
     return drafts.sort((a, b) => b.lastUpdated - a.lastUpdated);
   } catch (error) {
@@ -51,12 +51,35 @@ export const createNewSessionId = (): string => {
   return generateId();
 };
 
+export const getRetentionPeriod = (): number => {
+  try {
+    const stored = localStorage.getItem(SETTINGS_KEY);
+    if (!stored) return DRAFT_RETENTION_MS;
+    const settings = JSON.parse(stored);
+    return typeof settings.retentionMs === 'number' ? settings.retentionMs : DRAFT_RETENTION_MS;
+  } catch {
+    return DRAFT_RETENTION_MS;
+  }
+};
+
+export const setRetentionPeriod = (ms: number): void => {
+  try {
+    const stored = localStorage.getItem(SETTINGS_KEY);
+    const settings = stored ? JSON.parse(stored) : {};
+    settings.retentionMs = ms;
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+  } catch (error) {
+    console.error("Failed to save settings", error);
+  }
+};
+
 export const cleanupOldDrafts = (): void => {
   try {
     const drafts = getDrafts();
     const now = Date.now();
-    const freshDrafts = drafts.filter(d => (now - d.lastUpdated) < DRAFT_RETENTION_MS);
-    
+    const retentionMs = getRetentionPeriod();
+    const freshDrafts = drafts.filter(d => (now - d.lastUpdated) < retentionMs);
+
     if (drafts.length !== freshDrafts.length) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(freshDrafts));
       console.log(`Cleaned up ${drafts.length - freshDrafts.length} expired drafts.`);
