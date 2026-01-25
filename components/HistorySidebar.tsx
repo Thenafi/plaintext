@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Draft } from '../types';
 import { X, Clock, Trash2, FileText, Search } from 'lucide-react';
 
@@ -25,10 +25,18 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({ isOpen, onClose, drafts
     (draft.snippet && draft.snippet.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    // Enable transitions after a brief delay to prevent flash
+    const timer = setTimeout(() => setIsMounted(true), 100);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <>
       <div 
-        className={`fixed inset-y-0 right-0 w-80 bg-white dark:bg-zinc-900 shadow-2xl transform transition-transform duration-300 ease-in-out z-50 flex flex-col border-l border-gray-200 dark:border-zinc-800 ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
+        className={`fixed inset-y-0 right-0 w-80 bg-white dark:bg-zinc-900 shadow-2xl transform transition-transform ${isMounted ? 'duration-300' : 'duration-0'} ease-in-out z-50 flex flex-col border-l border-gray-200 dark:border-zinc-800 ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
       >
         <div className="p-5 border-b border-gray-100 dark:border-zinc-800 bg-gray-50 dark:bg-zinc-900">
           <div className="flex justify-between items-center mb-4">

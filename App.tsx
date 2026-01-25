@@ -203,10 +203,10 @@ function App() {
               <X className="w-5 h-5" />
             </button>
             
-            <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white font-sans">About ZenDraft</h2>
+            <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white font-sans">About Pad</h2>
             <div className="space-y-4 text-gray-600 dark:text-gray-300 text-sm leading-relaxed font-sans">
               <p>
-                ZenDraft is a minimalist, distraction-free writing environment designed to help you focus on your thoughts.
+                Pad is a minimalist, distraction-free writing environment designed to help you focus on your thoughts.
               </p>
               <ul className="list-disc pl-5 space-y-1">
                 <li><strong>Auto-Save:</strong> Your work is automatically saved to your browser's local storage as you type.</li>
