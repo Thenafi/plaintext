@@ -3,12 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Pad</title>
+    <title>Pad - Minimalist Online Text Editor for Focus and Privacy</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     
     <!-- SEO Meta Tags -->
     <meta name="description" content="Pad is a minimalist, distraction-free writing environment designed to help you focus on your thoughts. Privacy-first, local storage only." />
     <meta name="keywords" content="text editor, notepad, minimalist, writing app, distraction-free, local storage, privacy" />
+    <link rel="canonical" href="https://pad.bd/" />
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
@@ -19,50 +20,8 @@
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content="Pad - Minimalist Text Editor" />
     <meta name="twitter:description" content="Focus on your thoughts with Pad, a simple, privacy-first writing tool." />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        darkMode: 'class',
-        theme: {
-          extend: {
-            fontFamily: {
-              serif: ['Georgia', 'Cambria', '"Times New Roman"', 'Times', 'serif'],
-              mono: ['"Courier New"', 'Courier', 'monospace'],
-            },
-            colors: {
-              paper: '#fdfbf7',
-              ink: '#1c1917',
-            }
-          },
-        },
-      }
-    </script>
-    <style>
-      /* Custom Scrollbar for Webkit */
-      ::-webkit-scrollbar {
-        width: 6px;
-      }
-      ::-webkit-scrollbar-track {
-        background: transparent;
-      }
-      ::-webkit-scrollbar-thumb {
-        background-color: rgba(0, 0, 0, 0.1);
-        border-radius: 20px;
-      }
-      .dark ::-webkit-scrollbar-thumb {
-        background-color: rgba(255, 255, 255, 0.1);
-      }
-    </style>
-  <script type="importmap">
-{
-  "imports": {
-    "react/": "https://aistudiocdn.com/react@^19.2.0/",
-    "react": "https://aistudiocdn.com/react@^19.2.0",
-    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.554.0",
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/"
-  }
-}
-</script>
+    <meta name="twitter:description" content="Focus on your thoughts with Pad, a simple, privacy-first writing tool." />
+
 </head>
   <body class="bg-paper text-ink dark:bg-zinc-950 dark:text-zinc-200 transition-colors duration-300 overflow-hidden">
     <div id="root"></div>

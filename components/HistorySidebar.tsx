@@ -47,6 +47,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({ isOpen, onClose, drafts
             <button 
               onClick={onClose}
               className="p-2 hover:bg-gray-200 dark:hover:bg-zinc-700 rounded-full transition-colors"
+              aria-label="Close History"
             >
               <X className="w-5 h-5 text-gray-500 dark:text-gray-400" />
             </button>
@@ -78,6 +79,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({ isOpen, onClose, drafts
                 onMouseEnter={() => setHoveredDraft(draft)}
                 onMouseLeave={() => setHoveredDraft(null)}
                 className="w-full text-left group p-4 rounded-xl bg-gray-50 dark:bg-zinc-800/50 border border-transparent hover:border-gray-300 dark:hover:border-zinc-600 hover:shadow-sm transition-all duration-200"
+                aria-label={`Load draft from ${formatDate(draft.lastUpdated)}`}
               >
                 <div className="flex justify-between items-start mb-1">
                    <span className="text-xs font-medium text-gray-400 uppercase tracking-wider">

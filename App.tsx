@@ -119,6 +119,7 @@ function App() {
 
   return (
     <div className={`min-h-screen w-full flex flex-col relative ${font}`}>
+      <h1 className="sr-only">Pad - Minimalist Online Text Editor</h1>
       
       {/* Controls - Floating or Fixed Top Right */}
       <div className="fixed top-4 right-6 z-40 flex items-center gap-3 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm p-2 rounded-full shadow-sm border border-gray-200 dark:border-zinc-800 transition-opacity duration-300 opacity-40 hover:opacity-100">
@@ -134,6 +135,7 @@ function App() {
           onClick={() => setIsInfoOpen(true)}
           className="p-2 hover:bg-gray-100 dark:hover:bg-zinc-800 text-gray-600 dark:text-gray-400 rounded-full transition-colors"
           title="About"
+          aria-label="About Pad"
         >
           <Info className="w-4 h-4" />
         </button>
@@ -142,6 +144,7 @@ function App() {
           onClick={toggleFont}
           className="p-2 hover:bg-gray-100 dark:hover:bg-zinc-800 text-gray-600 dark:text-gray-400 rounded-full transition-colors"
           title="Toggle Font"
+          aria-label="Toggle Font Family"
         >
           <Type className="w-4 h-4" />
         </button>
@@ -150,6 +153,7 @@ function App() {
           onClick={() => setIsDarkMode(!isDarkMode)}
           className="p-2 hover:bg-gray-100 dark:hover:bg-zinc-800 text-gray-600 dark:text-gray-400 rounded-full transition-colors"
           title="Toggle Theme"
+          aria-label="Toggle Dark Mode"
         >
           {isDarkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
         </button>
@@ -158,6 +162,7 @@ function App() {
           onClick={handleDownload}
           className="p-2 hover:bg-gray-100 dark:hover:bg-zinc-800 text-gray-600 dark:text-gray-400 rounded-full transition-colors"
           title="Download Text"
+          aria-label="Download Text File"
         >
           <Download className="w-4 h-4" />
         </button>
@@ -168,6 +173,7 @@ function App() {
           onClick={handleOpenHistory}
           className="p-2 hover:bg-gray-100 dark:hover:bg-zinc-800 text-gray-600 dark:text-gray-400 rounded-full transition-colors"
           title="History"
+          aria-label="View Draft History"
         >
           <History className="w-4 h-4" />
         </button>
@@ -199,6 +205,7 @@ function App() {
             <button 
               onClick={() => setIsInfoOpen(false)}
               className="absolute top-4 right-4 p-1 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-full text-gray-400 transition-colors"
+              aria-label="Close Info Modal"
             >
               <X className="w-5 h-5" />
             </button>
