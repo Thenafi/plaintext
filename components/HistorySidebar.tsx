@@ -1,15 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { Draft } from '../types';
-import { X, Clock, Trash2, FileText, Search } from 'lucide-react';
+import { X, Clock, FileText, Search, Lock, LockOpen } from 'lucide-react';
 
 interface HistorySidebarProps {
   isOpen: boolean;
   onClose: () => void;
   drafts: Draft[];
-  onSelectDraft: (content: string) => void;
+  onSelectDraft: (id: string, isProtected: boolean) => void;
+  isSessionUnlocked: boolean;
+  onRequestUnlock: () => void;
 }
 
-const HistorySidebar: React.FC<HistorySidebarProps> = ({ isOpen, onClose, drafts, onSelectDraft }) => {
+const HistorySidebar: React.FC<HistorySidebarProps> = ({ 
+  isOpen, 
+  onClose, 
+  drafts, 
+  onSelectDraft,
+  isSessionUnlocked,
+  onRequestUnlock,
+}) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [hoveredDraft, setHoveredDraft] = useState<Draft | null>(null);
 
@@ -21,7 +30,6 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({ isOpen, onClose, drafts
   };
 
   const filteredDrafts = drafts.filter(draft => 
-    draft.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
     (draft.snippet && draft.snippet.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
@@ -32,6 +40,14 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({ isOpen, onClose, drafts
     const timer = setTimeout(() => setIsMounted(true), 100);
     return () => clearTimeout(timer);
   }, []);
+
+  const handleDraftClick = (draft: Draft) => {
+    if (draft.isProtected && !isSessionUnlocked) {
+      onRequestUnlock();
+    } else {
+      onSelectDraft(draft.id, draft.isProtected || false);
+    }
+  };
 
   return (
     <>
@@ -75,7 +91,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({ isOpen, onClose, drafts
             filteredDrafts.map((draft) => (
               <button
                 key={draft.id}
-                onClick={() => onSelectDraft(draft.content)}
+                onClick={() => handleDraftClick(draft)}
                 onMouseEnter={() => setHoveredDraft(draft)}
                 onMouseLeave={() => setHoveredDraft(null)}
                 className="w-full text-left group p-4 rounded-xl bg-gray-50 dark:bg-zinc-800/50 border border-transparent hover:border-gray-300 dark:hover:border-zinc-600 hover:shadow-sm transition-all duration-200"
@@ -85,13 +101,22 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({ isOpen, onClose, drafts
                    <span className="text-xs font-medium text-gray-400 uppercase tracking-wider">
                     {formatDate(draft.lastUpdated)}
                    </span>
+                   {draft.isProtected && (
+                     <span className="flex items-center gap-1 text-xs text-amber-600 dark:text-amber-400">
+                       {isSessionUnlocked ? (
+                         <LockOpen className="w-3 h-3" />
+                       ) : (
+                         <Lock className="w-3 h-3" />
+                       )}
+                     </span>
+                   )}
                 </div>
                 <p className="text-sm text-gray-700 dark:text-gray-300 line-clamp-3 leading-relaxed font-serif">
                   {draft.snippet || "Empty note"}
                 </p>
                 <div className="mt-3 flex items-center text-xs text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity">
                   <FileText className="w-3 h-3 mr-1" />
-                  Load this version
+                  {draft.isProtected && !isSessionUnlocked ? 'Unlock to view' : 'Load this version'}
                 </div>
               </button>
             ))
@@ -103,8 +128,8 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({ isOpen, onClose, drafts
         </div>
       </div>
 
-      {/* Hover Preview Portal/Overlay */}
-      {isOpen && hoveredDraft && (
+      {/* Hover Preview Portal/Overlay - only for non-protected or unlocked */}
+      {isOpen && hoveredDraft && (!hoveredDraft.isProtected || isSessionUnlocked) && (
         <div className="fixed right-80 top-0 bottom-0 flex items-center pr-4 pointer-events-none z-[60] w-[400px]">
           <div className="bg-white dark:bg-zinc-800 p-6 rounded-xl shadow-2xl border border-gray-100 dark:border-zinc-700 w-full max-h-[80vh] overflow-y-auto animate-in fade-in slide-in-from-right-4 duration-200">
              <div className="mb-2 text-xs font-medium text-gray-400 uppercase tracking-wider flex justify-between">
@@ -112,7 +137,7 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({ isOpen, onClose, drafts
                 <span>{formatDate(hoveredDraft.lastUpdated)}</span>
              </div>
              <div className="prose dark:prose-invert prose-sm max-w-none text-gray-700 dark:text-gray-300 font-serif whitespace-pre-wrap">
-                {hoveredDraft.content}
+                {hoveredDraft.snippet || 'Protected content'}
              </div>
           </div>
         </div>
